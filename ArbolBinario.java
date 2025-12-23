@@ -1,0 +1,104 @@
+import java.util.Arrays;
+
+class Nodo {
+    char clave;
+    Nodo izquierdo;
+    Nodo derecho;
+
+    public Nodo(char clave) {
+        this.clave = clave;
+        izquierdo = null;
+        derecho = null;
+    }
+}
+
+public class ArbolBinario {
+
+    // Construcción del árbol a partir de preorden e inorden
+    public static Nodo construirArbol(char[] pre, char[] in) {
+        if (pre.length == 0) {
+            return null;
+        }
+
+        char raizValor = pre[0];
+        Nodo raiz = new Nodo(raizValor);
+
+        int indiceRaiz = 0;
+        for (int i = 0; i < in.length; i++) {
+            if (in[i] == raizValor) {
+                indiceRaiz = i;
+                break;
+            }
+        }
+
+        char[] inIzq = Arrays.copyOfRange(in, 0, indiceRaiz);
+        char[] inDer = Arrays.copyOfRange(in, indiceRaiz + 1, in.length);
+
+        char[] preIzq = Arrays.copyOfRange(pre, 1, 1 + inIzq.length);
+        char[] preDer = Arrays.copyOfRange(pre, 1 + inIzq.length, pre.length);
+
+        raiz.izquierdo = construirArbol(preIzq, inIzq);
+        raiz.derecho = construirArbol(preDer, inDer);
+
+        return raiz;
+    }
+
+    // Recorrido en preorden
+    public static void preOrden(Nodo nodo) {
+        if (nodo != null) {
+            System.out.print(nodo.clave + " ");
+            preOrden(nodo.izquierdo);
+            preOrden(nodo.derecho);
+        }
+    }
+
+    // Recorrido en inorden
+    public static void inOrden(Nodo nodo) {
+        if (nodo != null) {
+            inOrden(nodo.izquierdo);
+            System.out.print(nodo.clave + " ");
+            inOrden(nodo.derecho);
+        }
+    }
+
+    // Recorrido en postorden
+    public static void postOrden(Nodo nodo) {
+        if (nodo != null) {
+            postOrden(nodo.izquierdo);
+            postOrden(nodo.derecho);
+            System.out.print(nodo.clave + " ");
+        }
+    }
+
+    // Método recursivo para imprimir nodos mayores que un valor dado
+    public static void imprimirMayores(Nodo nodo, char valor) {
+        if (nodo != null) {
+            imprimirMayores(nodo.izquierdo, valor);
+            if (nodo.clave > valor) {
+                System.out.print(nodo.clave + " ");
+            }
+            imprimirMayores(nodo.derecho, valor);
+        }
+    }
+
+    // Programa principal
+    public static void main(String[] args) {
+
+        char[] preorden = {'G','E','A','I','B','M','C','D','L','F','K','J','H'};
+        char[] inorden  = {'I','A','B','E','G','D','L','C','F','M','H','J','K'};
+
+        Nodo raiz = construirArbol(preorden, inorden);
+
+        System.out.println("Recorrido Preorden:");
+        preOrden(raiz);
+
+        System.out.println("\n\nRecorrido Inorden:");
+        inOrden(raiz);
+
+        System.out.println("\n\nRecorrido Postorden:");
+        postOrden(raiz);
+
+        System.out.println("\n\nNodos mayores que 'D':");
+        imprimirMayores(raiz, 'D');
+    }
+}
